@@ -1,14 +1,60 @@
 <div class="container">
   <h1>Manufacturing Dashboard</h1>
+
+  <!-- 上半部的三個圓餅圖 -->
   <div class="row">
     <div class="col-md-4">
       <p-chart type="pie" [data]="deliveryData"></p-chart>
+      <h3>Delivery %</h3>
     </div>
     <div class="col-md-4">
       <p-chart type="pie" [data]="qualityData"></p-chart>
+      <h3>Quality %</h3>
     </div>
     <div class="col-md-4">
       <p-chart type="pie" [data]="efficiencyData"></p-chart>
+      <h3>Efficiency %</h3>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- 左下的不及格資料表格 -->
+    <!-- <div class="col-md-6">
+      <h2>不及格資料</h2>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>日期</th>
+            <th>不及格數量</th>
+            <th>總數量</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of failedData">
+            <td>{{ item.date }}</td>
+            <td>{{ item.failed_qty }}</td>
+            <td>{{ item.total_qty }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div> -->
+
+    <!-- 右下方的三個折線圖 -->
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-md-12">
+          <h2>1個月內的交付率</h2>
+          <p-chart type="line" [data]="deliveryTrendData"></p-chart>
+        </div>
+        <div class="col-md-12">
+          <h2>1個月內的質量率</h2>
+          <p-chart type="line" [data]="qualityTrendData"></p-chart>
+        </div>
+        <div class="col-md-12">
+          <h2>1個月內的效率</h2>
+          <p-chart type="line" [data]="efficiencyTrendData"></p-chart>
+        </div>
+      </div>
     </div>
   </div>
 </div>
