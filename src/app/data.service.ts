@@ -15,10 +15,29 @@ export class DataService {
     return this.http.get<any[]>(this.dataUrl);
   }
 
-  calculateDeliveryData(data: any): number {
-    const actualOutput = data.actual_output;
-    const planOutput = data.plan_output;
-    return (actualOutput / planOutput) * 100;
+  calculateDeliveryData(data: any): any {
+    console.log(
+      'h',
+      data.actual_output,
+      data.plan_output,
+      'OuO',
+      typeof data.actual_output,
+      typeof data.plan_output
+    );
+    var lod = [];
+    for (var i = 0; i < data.length; i++) {
+      var actualOutput = 1.0;
+      var planOutput = 1.0;
+      if (typeof data[i].actual_output !== 'undefined') {
+        actualOutput = data[i].actual_output;
+      }
+      if (typeof data[i].plan_output !== 'undefined') {
+        planOutput = data[i].plan_output;
+      }
+      lod.push((actualOutput / planOutput) * 100);
+    }
+
+    return lod;
   }
 
   calculateQualityData(data: any): number {

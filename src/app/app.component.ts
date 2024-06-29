@@ -20,7 +20,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.dataService.getData().subscribe((data) => {
+      console.log('QAQ', data);
       const delivery = this.dataService.calculateDeliveryData(data);
+      //console.log('QAQ', delivery);
       const quality = this.dataService.calculateQualityData(data);
       const efficiency = this.dataService.calculateEfficiencyData(data);
 
