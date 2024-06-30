@@ -15,14 +15,20 @@ export class AppComponent implements OnInit {
   deliveryTrendData: any;
   qualityTrendData: any;
   efficiencyTrendData: any;
+  chartOptions: any;
 
   constructor(private dataService: DataService) {}
+  ikan: number = 0;
 
   ngOnInit() {
-    this.dataService.getData().subscribe((data) => {
-      console.log('QAQ', data);
+    this.dataService.getData().subscribe((data: any[]) => {
       const delivery = this.dataService.calculateDeliveryData(data);
       //console.log('QAQ', delivery);
+      console.log('QAQdelivery', delivery, this.ikan++);
+      if (!Array.isArray(data)) {
+        console.error('Data is not an array:', data);
+        return;
+      }
       const quality = this.dataService.calculateQualityData(data);
       const efficiency = this.dataService.calculateEfficiencyData(data);
 
@@ -34,15 +40,57 @@ export class AppComponent implements OnInit {
       this.deliveryTrendData = this.getTrendData(data, 'delivery');
       this.qualityTrendData = this.getTrendData(data, 'quality');
       this.efficiencyTrendData = this.getTrendData(data, 'efficiency');
+      /* this.chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          datalabels: {
+            color: '#000000',
+            font: {
+              size: 20,
+              weight: 'bold',
+            },
+            formatter: (value: any, context: any) => {
+              if (context.dataIndex === 0) {
+                return value.toFixed(2) + '%';
+              }
+              return '';
+            },
+            anchor: 'center',
+            align: 'center',
+          },
+        },
+        cutout: '70%',
+        rotation: -Math.PI / 2,
+        circumference: 2 * Math.PI,
+      };*/
     });
   }
 
+  /*  getDoughnutChartData(values: number[]): any {
+    const value = values.reduce((a, b) => a + b, 0) / values.length; // 計算平均值
+    return {
+      labels: ['Used', 'Remaining'],
+      datasets: [
+        {
+          data: [value, 100 - value],
+          backgroundColor: ['#FF6384', '#E0E0E0'],
+          hoverBackgroundColor: ['#FF6384', '#E0E0E0'],
+          borderColor: '#FFFFFF',
+          borderWidth: 2,
+        },
+      ],
+    };
+  } */
   getChartData(label: string, value: number): any {
+    var value_round = Math.round((value + Number.EPSILON) * 100) / 100;
+    var value_round2 = Math.round((100 - value_round) * 100) / 100;
     return {
       labels: [label, 'Remaining'],
       datasets: [
         {
-          data: [value, 100 - value],
+          // data: [...value],
+          data: [value_round, value_round2],
           backgroundColor: ['#42A5F5', '#FFA726'],
           hoverBackgroundColor: ['#64B5F6', '#FFB74D'],
         },

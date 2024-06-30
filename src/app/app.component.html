@@ -4,15 +4,19 @@
   <!-- 上半部的三個圓餅圖 -->
   <div class="row">
     <div class="col-md-4">
-      <p-chart type="pie" [data]="deliveryData"></p-chart>
+      <p-chart type="doughnut" [data]="deliveryData"></p-chart>
       <h3>Delivery %</h3>
     </div>
     <div class="col-md-4">
-      <p-chart type="pie" [data]="qualityData"></p-chart>
+      <p-chart
+        type="doughnut"
+        [data]="qualityData"
+        [options]="chartOptions"
+      ></p-chart>
       <h3>Quality %</h3>
     </div>
     <div class="col-md-4">
-      <p-chart type="pie" [data]="efficiencyData"></p-chart>
+      <p-chart type="doughnut" [data]="efficiencyData"></p-chart>
       <h3>Efficiency %</h3>
     </div>
   </div>
@@ -58,3 +62,9 @@
     </div>
   </div>
 </div>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+  integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
