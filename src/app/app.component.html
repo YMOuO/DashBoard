@@ -16,17 +16,48 @@
   <!-- 上半部的三個圓餅圖 -->
 
   <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-2">
       <p-chart type="doughnut" [data]="deliveryData" height="8em"></p-chart>
       <h6>Delivery (%)</h6>
     </div>
-    <div class="col-md-4">
+
+    <div class="col-md-2">
       <p-chart type="doughnut" [data]="qualityData" height="8em"></p-chart>
       <h6>Quality (%)</h6>
     </div>
-    <div class="col-md-4">
+
+    <div class="col-md-2">
       <p-chart type="doughnut" [data]="efficiencyData" height="8em"></p-chart>
       <h6>Efficiency (%)</h6>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-2">
+      <p-chart
+        type="bar"
+        [data]="deliveryBarChartData"
+        [options]="lineChartOptions"
+      ></p-chart>
+      <h6>Delivery Distribution</h6>
+    </div>
+
+    <div class="col-md-2">
+      <p-chart
+        type="bar"
+        [data]="qualityBarChartData"
+        [options]="lineChartOptions"
+      ></p-chart>
+      <h6>Quality Distribution</h6>
+    </div>
+
+    <div class="col-md-2">
+      <p-chart
+        type="bar"
+        [data]="efficiencyBarChartData"
+        [options]="lineChartOptions"
+      ></p-chart>
+      <h6>Efficiency Distribution</h6>
     </div>
   </div>
 
@@ -81,7 +112,7 @@
         </div> -->
   </div>
 </div>
-
+<div class="row"></div>
 <script
   src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
   integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="

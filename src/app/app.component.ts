@@ -16,7 +16,10 @@ export class AppComponent implements OnInit {
   qualityTrendData: any;
   efficiencyTrendData: any;
   CombinedTrendData: any;
-  lineChartOptions: any; // 新增 lineChartOptions 屬性
+  lineChartOptions: any;
+  deliveryBarChartData: any;
+  qualityBarChartData: any;
+  efficiencyBarChartData: any;
 
   constructor(private dataService: DataService) {}
   ikan: number = 0;
@@ -41,7 +44,9 @@ export class AppComponent implements OnInit {
       this.qualityTrendData = this.getTrendData(data, 'quality');
       this.efficiencyTrendData = this.getTrendData(data, 'efficiency');
       this.CombinedTrendData = this.getAllTrendData(data);
-
+      this.deliveryBarChartData = this.getDeliveryBarChartData(data);
+      this.qualityBarChartData = this.getQualityBarChartData(data);
+      this.efficiencyBarChartData = this.getEfficiencyBarChartData(data);
       // 初始化 lineChartOptions 屬性，禁用 datalabels 插件
       this.lineChartOptions = {
         responsive: true,
@@ -77,7 +82,6 @@ export class AppComponent implements OnInit {
       //labels: [label, 'Remaining'],
       datasets: [
         {
-          // data: [...value],
           data: [value_round, value_round2],
           backgroundColor: ['#42A5F5', '#FFA726'],
           hoverBackgroundColor: ['#64B5F6', '#FFB74D'],
@@ -158,6 +162,93 @@ export class AppComponent implements OnInit {
           data: values,
           fill: false,
           borderColor: this.getRandomColor(),
+        },
+      ],
+    };
+  }
+
+  // 新增方法來計算並設置不同 delivery 範圍內的產品數量
+  getDeliveryBarChartData(data: ManufacturingData[]): any {
+    let highDelivery = 0;
+    let mediumDelivery = 0;
+    let lowDelivery = 0;
+
+    data.forEach((item) => {
+      const delivery = this.dataService.calculateDeliveryData([item]);
+      if (delivery > 85) {
+        highDelivery++;
+      } else if (delivery >= 80 && delivery <= 85) {
+        mediumDelivery++;
+      } else {
+        lowDelivery++;
+      }
+    });
+
+    return {
+      labels: ['> 85%', '80-85%', '< 80%'],
+      datasets: [
+        {
+          label: 'Count',
+          data: [highDelivery, mediumDelivery, lowDelivery],
+          backgroundColor: ['#4caf50', '#ffeb3b', '#f44336'],
+        },
+      ],
+    };
+  }
+
+  // 新增方法來計算並設置不同 quality 範圍內的產品數量
+  getQualityBarChartData(data: ManufacturingData[]): any {
+    let highQuality = 0;
+    let mediumQuality = 0;
+    let lowQuality = 0;
+
+    data.forEach((item) => {
+      const quality = this.dataService.calculateQualityData([item]);
+      if (quality > 92) {
+        highQuality++;
+      } else if (quality >= 90 && quality <= 92) {
+        mediumQuality++;
+      } else {
+        lowQuality++;
+      }
+    });
+
+    return {
+      labels: ['> 98%', '90-98%', '< 90%'],
+      datasets: [
+        {
+          label: 'Count',
+          data: [highQuality, mediumQuality, lowQuality],
+          backgroundColor: ['#4caf50', '#ffeb3b', '#f44336'],
+        },
+      ],
+    };
+  }
+
+  // 新增方法來計算並設置不同 efficiency 範圍內的產品數量
+  getEfficiencyBarChartData(data: ManufacturingData[]): any {
+    let highEfficiency = 0;
+    let mediumEfficiency = 0;
+    let lowEfficiency = 0;
+
+    data.forEach((item) => {
+      const efficiency = this.dataService.calculateEfficiencyData([item]);
+      if (efficiency > 75) {
+        highEfficiency++;
+      } else if (efficiency >= 65 && efficiency <= 75) {
+        mediumEfficiency++;
+      } else {
+        lowEfficiency++;
+      }
+    });
+
+    return {
+      labels: ['> 75%', '65-75%', '<65%'],
+      datasets: [
+        {
+          label: 'Count',
+          data: [highEfficiency, mediumEfficiency, lowEfficiency],
+          backgroundColor: ['#4caf50', '#ffeb3b', '#f44336'],
         },
       ],
     };
