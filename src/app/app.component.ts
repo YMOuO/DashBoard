@@ -15,20 +15,20 @@ export class AppComponent implements OnInit {
   deliveryTrendData: any;
   qualityTrendData: any;
   efficiencyTrendData: any;
-  chartOptions: any;
+  CombinedTrendData: any;
+  lineChartOptions: any; // 新增 lineChartOptions 屬性
 
   constructor(private dataService: DataService) {}
   ikan: number = 0;
-
+  map2member: { [key: string]: any } = {
+    delivery: ['actual_output', 'plan_output'],
+    quality: ['passed_qty', 'total_qty'],
+    efficiency: ['std_hr', 'total_hr'],
+  };
   ngOnInit() {
     this.dataService.getData().subscribe((data: any[]) => {
       const delivery = this.dataService.calculateDeliveryData(data);
       //console.log('QAQ', delivery);
-      console.log('QAQdelivery', delivery, this.ikan++);
-      if (!Array.isArray(data)) {
-        console.error('Data is not an array:', data);
-        return;
-      }
       const quality = this.dataService.calculateQualityData(data);
       const efficiency = this.dataService.calculateEfficiencyData(data);
 
@@ -40,53 +40,41 @@ export class AppComponent implements OnInit {
       this.deliveryTrendData = this.getTrendData(data, 'delivery');
       this.qualityTrendData = this.getTrendData(data, 'quality');
       this.efficiencyTrendData = this.getTrendData(data, 'efficiency');
-      /* this.chartOptions = {
+      this.CombinedTrendData = this.getAllTrendData(data);
+
+      // 初始化 lineChartOptions 屬性，禁用 datalabels 插件
+      this.lineChartOptions = {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
           datalabels: {
-            color: '#000000',
-            font: {
-              size: 20,
-              weight: 'bold',
-            },
-            formatter: (value: any, context: any) => {
-              if (context.dataIndex === 0) {
-                return value.toFixed(2) + '%';
-              }
-              return '';
-            },
-            anchor: 'center',
-            align: 'center',
+            display: false, // 禁用 datalabels 插件
           },
         },
-        cutout: '70%',
-        rotation: -Math.PI / 2,
-        circumference: 2 * Math.PI,
-      };*/
+        scales: {
+          x: {
+            beginAtZero: true,
+          },
+          y: {
+            beginAtZero: true,
+          },
+        },
+      };
     });
   }
-
-  /*  getDoughnutChartData(values: number[]): any {
-    const value = values.reduce((a, b) => a + b, 0) / values.length; // 計算平均值
-    return {
-      labels: ['Used', 'Remaining'],
-      datasets: [
-        {
-          data: [value, 100 - value],
-          backgroundColor: ['#FF6384', '#E0E0E0'],
-          hoverBackgroundColor: ['#FF6384', '#E0E0E0'],
-          borderColor: '#FFFFFF',
-          borderWidth: 2,
-        },
-      ],
-    };
-  } */
+  getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
   getChartData(label: string, value: number): any {
     var value_round = Math.round((value + Number.EPSILON) * 100) / 100;
     var value_round2 = Math.round((100 - value_round) * 100) / 100;
     return {
-      labels: [label, 'Remaining'],
+      //labels: [label, 'Remaining'],
       datasets: [
         {
           // data: [...value],
@@ -103,20 +91,65 @@ export class AppComponent implements OnInit {
     return data.filter((item: any) => item.failed_qty > 0);
   }
 
+  getAllTrendData(data: any): any {
+    // 返回趨勢數據
+    var data_key = ['delivery', 'quality', 'efficiency'];
+    var tempdaily: { [key: string]: any } = {};
+    for (var i = 0; i < data_key.length; i++) {
+      tempdaily[data_key[i]] = this.getTrendData(data, data_key[i]);
+    }
+    var data_combine = [];
+    for (var i = 0; i < data_key.length; i++) {
+      data_combine.push(tempdaily[data_key[i]].datasets[0]);
+    }
+    var labels = tempdaily[data_key[0]].labels;
+    return {
+      labels: labels,
+      datasets: data_combine,
+    };
+  }
+
   getTrendData(data: any, type: string): any {
     // 返回趨勢數據
-    const labels = data.map((item: any) => item.date);
-    const values = data.map((item: any) => {
-      if (type === 'delivery') {
-        return this.dataService.calculateDeliveryData(item);
-      } else if (type === 'quality') {
-        return this.dataService.calculateQualityData(item);
-      } else if (type === 'efficiency') {
-        return this.dataService.calculateEfficiencyData(item);
+    var tempdaily: { [key: string]: any } = {};
+    for (var i = 0; i < data.length; i++) {
+      var day: string = data[i].datecode;
+      if (tempdaily.hasOwnProperty(data[i].datecode)) {
+        tempdaily[day][this.map2member[type][0]] +=
+          data[i][this.map2member[type][0]];
+        tempdaily[day][this.map2member[type][1]] +=
+          data[i][this.map2member[type][1]];
+      } else {
+        tempdaily[day] = {};
+        tempdaily[day][this.map2member[type][0]] =
+          data[i][this.map2member[type][0]];
+        tempdaily[day][this.map2member[type][1]] =
+          data[i][this.map2member[type][1]];
       }
-      return [];
-    });
+    }
+    var labels = Object.keys(tempdaily);
+    labels.sort();
+    var data_process_func = this.dataService.calculateDeliveryDataSingle;
+    switch (type) {
+      case 'delivery':
+        data_process_func = this.dataService.calculateDeliveryDataSingle;
+        break;
 
+      case 'quality':
+        data_process_func = this.dataService.calculateeQualityDataSingle;
+        break;
+
+      case 'efficiency':
+        data_process_func = this.dataService.calculateEfficiencyDataSingle;
+        break;
+    }
+    var values = [];
+    for (var i = 0; i < labels.length; i++) {
+      values.push(data_process_func(tempdaily[labels[i]]));
+    }
+
+    console.log('kk', labels.length, values.length);
+    console.log('jj', labels, values);
     return {
       labels: labels,
       datasets: [
@@ -124,7 +157,7 @@ export class AppComponent implements OnInit {
           label: type,
           data: values,
           fill: false,
-          borderColor: '#4bc0c0',
+          borderColor: this.getRandomColor(),
         },
       ],
     };

@@ -1,23 +1,32 @@
 <div class="container">
   <h1>Manufacturing Dashboard</h1>
 
+  <div class="row">
+    <div class="col-md-24">
+      <h6>One Month Trend</h6>
+      <p-chart
+        type="line"
+        [data]="CombinedTrendData"
+        [options]="lineChartOptions"
+        height="10em"
+      ></p-chart>
+    </div>
+  </div>
+
   <!-- 上半部的三個圓餅圖 -->
+
   <div class="row">
     <div class="col-md-4">
-      <p-chart type="doughnut" [data]="deliveryData"></p-chart>
-      <h3>Delivery %</h3>
+      <p-chart type="doughnut" [data]="deliveryData" height="8em"></p-chart>
+      <h6>Delivery (%)</h6>
     </div>
     <div class="col-md-4">
-      <p-chart
-        type="doughnut"
-        [data]="qualityData"
-        [options]="chartOptions"
-      ></p-chart>
-      <h3>Quality %</h3>
+      <p-chart type="doughnut" [data]="qualityData" height="8em"></p-chart>
+      <h6>Quality (%)</h6>
     </div>
     <div class="col-md-4">
-      <p-chart type="doughnut" [data]="efficiencyData"></p-chart>
-      <h3>Efficiency %</h3>
+      <p-chart type="doughnut" [data]="efficiencyData" height="8em"></p-chart>
+      <h6>Efficiency (%)</h6>
     </div>
   </div>
 
@@ -44,24 +53,35 @@
     </div>
 
     <!-- 右下方的三個折線圖 -->
-    <div class="col-md-6">
+    <!--  <div class="col-md-6">
       <div class="row">
         <div class="col-md-12">
           <h2>1個月內的交付率</h2>
-          <p-chart type="line" [data]="deliveryTrendData"></p-chart>
-        </div>
-        <div class="col-md-12">
+          <p-chart
+            type="line"
+            [data]="deliveryTrendData"
+            [options]="lineChartOptions"
+          ></p-chart>
+        </div> -->
+    <!--  <div class="col-md-12">
           <h2>1個月內的質量率</h2>
-          <p-chart type="line" [data]="qualityTrendData"></p-chart>
+          <p-chart
+            type="line"
+            [data]="qualityTrendData"
+            [options]="lineChartOptions"
+          ></p-chart>
         </div>
         <div class="col-md-12">
           <h2>1個月內的效率</h2>
-          <p-chart type="line" [data]="efficiencyTrendData"></p-chart>
-        </div>
-      </div>
-    </div>
+          <p-chart
+            type="line"
+            [data]="efficiencyTrendData"
+            [options]="lineChartOptions"
+          ></p-chart>
+        </div> -->
   </div>
 </div>
+
 <script
   src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
   integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
