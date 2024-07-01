@@ -263,8 +263,6 @@ export class AppComponent implements OnInit {
     };
   }
 
-  // 新增方法來過濾低於90的效率數據
-  // 新增方法來過濾低於90的交付率數據
   getLowDeliveryData(data: any[]): any[] {
     var new_data = data.filter((item) => {
       const delivery = this.dataService.calculateDeliveryDataSingle(item);
@@ -276,9 +274,18 @@ export class AppComponent implements OnInit {
         new_data[i]
       );
     }
+    new_data.sort(function (a, b) {
+      if (a.datecode < b.datecode) {
+        return -1;
+      }
+      if (a.datecode > b.datecode) {
+        return 1;
+      }
+
+      return 0;
+    });
     return new_data;
   }
-  // 新增方法來過濾低於90的質量數據
   getLowQualityData(data: any[]): any[] {
     var new_data = data.filter((item) => {
       const quality = this.dataService.calculateeQualityDataSingle(item);
@@ -290,6 +297,16 @@ export class AppComponent implements OnInit {
         new_data[i]
       );
     }
+    new_data.sort(function (a, b) {
+      if (a.datecode < b.datecode) {
+        return -1;
+      }
+      if (a.datecode > b.datecode) {
+        return 1;
+      }
+
+      return 0;
+    });
     return new_data;
   }
 
@@ -304,6 +321,16 @@ export class AppComponent implements OnInit {
         new_data[i]
       );
     }
+    new_data.sort(function (a, b) {
+      if (a.datecode < b.datecode) {
+        return -1;
+      }
+      if (a.datecode > b.datecode) {
+        return 1;
+      }
+
+      return 0;
+    });
     return new_data;
   }
 }
