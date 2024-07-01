@@ -1,5 +1,6 @@
 export interface ManufacturingData {
   date: string;
+  product_code: number;
   actual_output: number;
   plan_output: number;
   passed_qty: number;
@@ -7,4 +8,7 @@ export interface ManufacturingData {
   std_hr: number;
   total_hr: number;
   failed_qty: number;
+  efficiency: number;
+  delivery: number;
+  quality: number;
 }

@@ -11,7 +11,7 @@ export class AppComponent implements OnInit {
   deliveryData: any;
   qualityData: any;
   efficiencyData: any;
-  failedData: ManufacturingData[] = [];
+  failedData: any[] = [];
   deliveryTrendData: any;
   qualityTrendData: any;
   efficiencyTrendData: any;
@@ -20,6 +20,9 @@ export class AppComponent implements OnInit {
   deliveryBarChartData: any;
   qualityBarChartData: any;
   efficiencyBarChartData: any;
+  lowEfficiencyData: any[] = []; // 新增 lowEfficiencyData 屬性
+  lowQualityData: any[] = []; // 新增 lowQualityData 屬性
+  lowDeliveryData: any[] = []; // 新增 lowDeliveryData 屬性
 
   constructor(private dataService: DataService) {}
   ikan: number = 0;
@@ -47,6 +50,12 @@ export class AppComponent implements OnInit {
       this.deliveryBarChartData = this.getDeliveryBarChartData(data);
       this.qualityBarChartData = this.getQualityBarChartData(data);
       this.efficiencyBarChartData = this.getEfficiencyBarChartData(data);
+
+      // 計算並設置低於90的數據
+      this.lowEfficiencyData = this.getLowEfficiencyData(data);
+      this.lowQualityData = this.getLowQualityData(data);
+      this.lowDeliveryData = this.getLowDeliveryData(data);
+
       // 初始化 lineChartOptions 屬性，禁用 datalabels 插件
       this.lineChartOptions = {
         responsive: true,
@@ -168,7 +177,7 @@ export class AppComponent implements OnInit {
   }
 
   // 新增方法來計算並設置不同 delivery 範圍內的產品數量
-  getDeliveryBarChartData(data: ManufacturingData[]): any {
+  getDeliveryBarChartData(data: any[]): any {
     let highDelivery = 0;
     let mediumDelivery = 0;
     let lowDelivery = 0;
@@ -197,7 +206,7 @@ export class AppComponent implements OnInit {
   }
 
   // 新增方法來計算並設置不同 quality 範圍內的產品數量
-  getQualityBarChartData(data: ManufacturingData[]): any {
+  getQualityBarChartData(data: any[]): any {
     let highQuality = 0;
     let mediumQuality = 0;
     let lowQuality = 0;
@@ -226,7 +235,7 @@ export class AppComponent implements OnInit {
   }
 
   // 新增方法來計算並設置不同 efficiency 範圍內的產品數量
-  getEfficiencyBarChartData(data: ManufacturingData[]): any {
+  getEfficiencyBarChartData(data: any[]): any {
     let highEfficiency = 0;
     let mediumEfficiency = 0;
     let lowEfficiency = 0;
@@ -252,5 +261,49 @@ export class AppComponent implements OnInit {
         },
       ],
     };
+  }
+
+  // 新增方法來過濾低於90的效率數據
+  // 新增方法來過濾低於90的交付率數據
+  getLowDeliveryData(data: any[]): any[] {
+    var new_data = data.filter((item) => {
+      const delivery = this.dataService.calculateDeliveryDataSingle(item);
+      return delivery < 80;
+    });
+    new_data = JSON.parse(JSON.stringify(new_data));
+    for (var i = 0; i < new_data.length; i++) {
+      new_data[i].val = this.dataService.calculateDeliveryDataSingle(
+        new_data[i]
+      );
+    }
+    return new_data;
+  }
+  // 新增方法來過濾低於90的質量數據
+  getLowQualityData(data: any[]): any[] {
+    var new_data = data.filter((item) => {
+      const quality = this.dataService.calculateeQualityDataSingle(item);
+      return quality < 90;
+    });
+    new_data = JSON.parse(JSON.stringify(new_data));
+    for (var i = 0; i < new_data.length; i++) {
+      new_data[i].val = this.dataService.calculateeQualityDataSingle(
+        new_data[i]
+      );
+    }
+    return new_data;
+  }
+
+  getLowEfficiencyData(data: any[]): any[] {
+    var new_data = data.filter((item) => {
+      const efficiency = this.dataService.calculateEfficiencyDataSingle(item);
+      return efficiency < 65;
+    });
+    new_data = JSON.parse(JSON.stringify(new_data));
+    for (var i = 0; i < new_data.length; i++) {
+      new_data[i].val = this.dataService.calculateEfficiencyDataSingle(
+        new_data[i]
+      );
+    }
+    return new_data;
   }
 }
